@@ -1,196 +1,79 @@
-# AFDSA-Terrain-Analyzer
-Autonomous mobile robot for terrain suitability analysis using sensor fusion (IMU + environmental data) and on-device scoring (DSS) for precision equipment deployment.
+# AFDSA — Autonomous Field Deployment Suitability Analyzer
 
-# 🚗 Autonomous Field Deployment Suitability Analyzer (AFDSA)
+AFDSA is a mobile robotics project focused on assessing whether a location is suitable for placing precision field equipment. The prototype brings together a mobile chassis, onboard sensing, and a Deployment Suitability Score (DSS) concept to make terrain observations easier to collect and review.
 
-A mobile robotic system designed to evaluate terrain suitability for precision equipment deployment using onboard sensor fusion and real-time scoring.
+## Prototype
 
----
+The robot brings its electronics and display onto a mobile platform:
 
-## 📌 Overview
+![AFDSA prototype with its onboard electronics and display](clips/robot-display.jpg)
 
-The **AFDSA** is an embedded robotic platform that autonomously navigates a defined area, collects environmental and stability data, and computes a **Deployment Suitability Score (DSS)** for each location.
+The wider view shows the chassis and how the electronics are mounted:
 
-Unlike traditional methods, this system:
+![Wide view of the AFDSA mobile robot prototype](clips/robot-overview.jpg)
 
-* Requires **no cloud processing**
-* Runs entirely **on-device**
-* Provides **objective, repeatable terrain analysis**
+## Interface and sensor development
 
-📄 Based on our practicum report: 
+These screenshots show the project's web-control interface and sensor readings during development:
 
----
+![Mobile web interface prototype with movement controls](clips/WhatsApp%20Image%202026-10-31%20at%202.10.09%20PM.jpeg)
 
-## 🎯 Problem Statement
+![ESP32 development view showing sensor readings](clips/WhatsApp%20Image%202026-10-31%20at%202.05.31%20PM.jpeg)
 
-Manual terrain assessment is:
+The screenshots document prototype work and may show features that are not in the current sketch.
 
-* Time-consuming
-* Inconsistent
-* Sparse in data coverage
+## How the project works
 
-AFDSA solves this by:
+The project is intended to collect motion and environmental observations while the robot moves through a survey area. These observations can be used to assess terrain stability and summarize conditions with a DSS.
 
-* Automating data collection
-* Standardizing evaluation using DSS
-* Providing actionable classification (Suitable / Marginal / Unsuitable)
+The prototype imagery and development work show:
 
----
+- A wheeled robot chassis with motorized movement
+- An ESP32-based controller
+- Motion and environmental sensor readings, including acceleration, temperature, and humidity
+- A display and a browser-based movement-control interface
 
-## ⚙️ System Architecture
+## Firmware in this repository
 
-The system consists of four main subsystems:
+The current firmware is [`afdsa/afdsa.ino`](afdsa/afdsa.ino). It runs a basic web server on the ESP32 and provides browser controls for moving forward, backward, left, and right, and stopping the motors.
 
-* **Sensing**
+The checked-in sketch currently does **not** implement autonomous survey navigation, sensor readings, or DSS calculation. The screenshots above show prototype interfaces and development output; not every element shown is part of the current sketch.
 
-  * MPU6050 (IMU)
-  * DHT22 (Temperature & Humidity)
+### Try the firmware
 
-* **Navigation**
+1. Open `afdsa/afdsa.ino` in the Arduino IDE.
+2. Select the ESP32 board and its connected serial port.
+3. Set the Wi-Fi network name and password for your environment in the sketch.
+4. Check that the motor driver and motor wiring match the GPIO assignments in the sketch before powering the robot.
+5. Upload the sketch, open the Serial Monitor at **115200 baud**, and note the ESP32's IP address.
+6. Open that IP address in a browser on the same Wi-Fi network to use the movement controls.
 
-  * 4WD Chassis
-  * HC-SR04 (Obstacle detection)
-  * L298N Motor Driver
+Only test motor controls in a clear, controlled area where the robot can move safely.
 
-* **Processing**
+## Repository layout
 
-  * ESP32 / Arduino Mega
-
-* **Output**
-
-  * Serial communication (UART)
-
----
-
-## 🧪 Methodology
-
-At each grid point:
-
-1. Robot stops
-2. Collects sensor data (3-second window)
-3. Computes stability parameters:
-
-   * Vibration (RMS)
-   * Surface Tilt
-   * Temperature Drift
-   * Humidity Variability
-4. Calculates DSS
-5. Classifies terrain
-
----
-
-## 📊 Deployment Suitability Score (DSS)
-
-The DSS is computed as a weighted combination:
-
-* Vibration → 35%
-* Tilt → 30%
-* Temperature Drift → 20%
-* Humidity Variability → 15%
-
-### Classification:
-
-| DSS Range | Classification | Meaning             |
-| --------- | -------------- | ------------------- |
-| ≥ 7.0     | Suitable       | Safe for deployment |
-| 4.0–6.9   | Marginal       | Use with caution    |
-| < 4.0     | Unsuitable     | Avoid deployment    |
-
----
-
-## 📈 Sample Output
-
-| Point | DSS | Classification |
-| ----- | --- | -------------- |
-| P1    | 8.6 | Suitable       |
-| P2    | 6.2 | Marginal       |
-| P3    | 3.9 | Unsuitable     |
-
----
-
-## 🚀 Features
-
-* ✅ Fully autonomous grid navigation
-* ✅ On-device sensor fusion (no cloud)
-* ✅ Real-time scoring system
-* ✅ Low-cost hardware design
-* ✅ Modular firmware
-
----
-
-## 🔌 Hardware Requirements
-
-* ESP32 / Arduino Mega
-* MPU6050 IMU
-* DHT22 Sensor
-* HC-SR04 Ultrasonic Sensor
-* L298N Motor Driver
-* 4 DC Motors + Chassis
-* Battery Pack
-
----
-
-## 💻 Software & Tools
-
-* Arduino IDE / PlatformIO
-* Wire.h
-* MPU6050 Library
-* DHT Sensor Library
-* NewPing
-
----
-
-## 📂 Project Structure
-
-```
-AFDSA/
-│── firmware/
-│   ├── sensors/
-│   ├── dss/
-│   ├── navigation/
-│   └── main.ino
-│
-│── hardware/
-│   ├── wiring_diagram.png
-│   └── block_diagram.png
-│
-│── docs/
-│   └── AFDSA_Report.pdf
-│
-│── data/
-│   └── sample_outputs.csv
-│
-│── README.md
+```text
+.
+├── afdsa/
+│   └── afdsa.ino
+├── clips/
+│   ├── robot-display.jpg
+│   ├── robot-overview.jpg
+│   ├── New Bitmap image.bmp
+│   ├── New Bitmap image (2).bmp
+│   ├── WhatsApp Image 2026-10-31 at 2.05.31 PM.jpeg
+│   └── WhatsApp Image 2026-10-31 at 2.10.09 PM.jpeg
+└── README.md
 ```
 
----
+The original prototype photos and screenshots are kept in [`clips/`](clips/). The two JPEG photos embedded above are compact copies of the BMP photos for display in this README.
 
-## 🔮 Future Improvements
+## Contributors
 
-* 🌱 Soil moisture sensing
-* 📡 Wireless data transmission (Wi-Fi/Bluetooth)
-* 📍 GPS-based mapping
-* 🤖 Machine learning-based classification
-* 🧭 SLAM navigation
+- Miraan Vahie
+- Piyush Gupta
+- Akshat Sharma
 
----
+## License
 
-## 👨‍💻 Contributors
-
-* Miraan Vahie
-* Piyush Gupta
-* Akshat Sharma
-
----
-
-## 📜 License
-
-This project is for academic and research purposes.
-
----
-
-## 💡 Why This Matters
-
-This project shows how **low-cost embedded systems + robotics** can replace manual, subjective field decisions with **data-driven automation**.
-
----
+All rights reserved. A design patent application is in process; no patent has been granted.
